@@ -7,9 +7,9 @@
 
 #XENOMAI_VERSION = v1.0
 
-XENOMAI_SITE = https://gitlab.openwide.fr/open-wide/autosar-xenomai-skin.git
+XENOMAI_SITE = https://github.com/aurel94/autosar-xenomai-skin.git
 #XENOMAI_SITE_METHOD = git
-#XENOMAI_SOURCE = xenomai-$(XENOMAI_VERSION).tar.bz2
+XENOMAI_SOURCE = lib/AUTOSAR_Xenomai_Skin
 XENOMAI_LICENSE = headers: GPLv2+ with exception, libraries: LGPLv2.1+, kernel: GPLv2+, docs: GFDLv1.2+, ipipe patch and can driver: GPLv2
 # GFDL is not included but refers to gnu.org
 XENOMAI_LICENSE_FILES = debian/copyright include/COPYING src/skins/native/COPYING ksrc/nucleus/COPYING
@@ -27,7 +27,7 @@ endif
 
 XENOMAI_CONF_OPTS += --includedir=/usr/include/xenomai/ --disable-doc-install 
 
-XENOMAI_DIR_BUILD = $(BUILD_DIR)/lib/AUTOSAR_Xenomai_Skin
+XENOMAI_DIR_BUILD = $(BUILD_DIR)/xenomai-autosar
 
 XENOMAI_AUTORECONF = YES
 
