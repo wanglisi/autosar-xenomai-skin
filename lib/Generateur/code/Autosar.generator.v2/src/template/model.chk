@@ -1,0 +1,4 @@
+import model;
+context autosar422::ArPackagesType1 ERROR
+	"Test" :
+	this.arPackage.size >= 1;

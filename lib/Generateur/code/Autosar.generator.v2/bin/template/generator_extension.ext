@@ -1,0 +1,29 @@
+import metamodel;
+
+String getShortName(String name) :
+ name.split('/').last();
+ 
+String getNumericalParamValue(autosar422::EcucContainerValue EcucContainerValue, String param) : 
+ EcucContainerValue.parameterValues.ecucNumericalParamValue.select(e|e.definitionRef.value == param).first().value.mixed.text.first();
+ 
+String getTextualParamValue(autosar422::EcucContainerValue EcucContainerValue, String param) :
+	EcucContainerValue.parameterValues.ecucTextualParamValue.select(e|e.definitionRef.value == param).first().value.value;
+
+String getFirstSubCointainersDefinitionRef(autosar422::EcucContainerValue EcucContainerValue) :
+	EcucContainerValue.subContainers.ecucContainerValue.first().definitionRef.value;
+
+String getFirstReferenceValue(autosar422::EcucContainerValue EcucContainerValue) :
+	EcucContainerValue.subContainers.ecucContainerValue.first().referenceValues.ecucReferenceValue.first().valueRef.value;
+
+List[autosar422::EcucContainerValue] selectEcucContainerValueList(autosar422::EcucModuleConfigurationValues EcucModuleConfigurationValues, String shortName) :
+	EcucModuleConfigurationValues.containers.ecucContainerValue.select(e|e.definitionRef.value == shortName);
+
+String castType(String type) :
+	"("+type+"Type)";
+	
+String getReferenceParamValue(autosar422::EcucContainerValue EcucContainerValue, String param) :
+	EcucContainerValue.referenceValues.ecucReferenceValue.selectFirst(e|e.definitionRef.value == param).valueRef.value ;
+	
+	
+String getBoolean(String val) :
+	if (val == "0") then "FALSE" else "TRUE";

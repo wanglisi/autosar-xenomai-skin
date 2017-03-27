@@ -1,0 +1,241 @@
+«EXTENSION template::generator_extension-»
+«DEFINE PreGeneration FOR autosar422::Autosar-»
+«ENDDEFINE»
+
+
+«DEFINE OsTaskResource FOR autosar422::EcucReferenceValue-»
+	&«getShortName(this.valueRef.value)»_OsResource,
+«ENDDEFINE-»
+
+«DEFINE OsTask FOR autosar422::EcucContainerValue-»
+/*********************** Task «this.shortName.value» ***********************/
+extern void «this.shortName.value»_function(void);
+«IF (this.referenceValues.ecucReferenceValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsTask/OsTaskResourceRef").compareTo(null) != 0)-»
+struct OsResource * «this.shortName.value»_OsTaskResourceRef[«this.shortName.value»_RESOURCE_COUNT] = {
+	«EXPAND OsTaskResource FOREACH this.referenceValues.ecucReferenceValue.select(e|e.definitionRef.value == "/ARRoot/Os/OsTask/OsTaskResourceRef")-»
+};
+«ENDIF-»	
+
+
+struct OsTask «this.shortName.value»_OsTask = {
+	«getNumericalParamValue(this,"/ARRoot/Os/OsTask/OsTaskActivation")»,	//	EcucIntegerParamDef OsTaskActivation;
+	«getNumericalParamValue(this,"/ARRoot/Os/OsTask/OsTaskPriority")»,		//	EcucIntegerParamDef OsTaskPriority;
+	TASK_«getTextualParamValue(this,"/ARRoot/Os/OsTask/OsTaskSchedule")»,	//	EcucEnumerationParamDef OsTaskSchedule; NON or FULL preempt
+	//											//	struct OsApplication * OsTaskAccessingApplication;
+	//											//	struct OsEvent * OsTaskEventRef;
+«IF (this.referenceValues.ecucReferenceValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsTask/OsTaskResourceRef").compareTo(null) != 0)-»
+	«this.shortName.value»_OsTaskResourceRef,	//	struct OsResource ** OsTaskResourceRef;	
+«ELSE-»	
+	NULL,										//	struct OsResource ** OsTaskResourceRef;
+«ENDIF-»
+	NULL,										//	struct OsTaskAutostart * OsTaskAutostart;
+	//											//	struct OsTaskTimingProtection * OsTaskTimingProtection;
+	«this.shortName.value»_function,			//	EcucFunctionNameDef handler;
+	«this.shortName.value»_RESOURCE_COUNT,	//	EcucIntegerParamDef ResourceCount;	
+	NULL										//	struct OsTaskXenomai * OsTaskXenomai;
+};
+
+«this.subContainers.ecucContainerValue.select(e|e.definitionRef.value == "/ARRoot/Os/OsTask/OsTaskAutostart")»
+«ENDDEFINE»
+
+«DEFINE OsTaskRef FOR autosar422::EcucContainerValue-»
+&«this.shortName.value»_OsTask, 
+«ENDDEFINE»
+
+«DEFINE OsAlarmAutostart FOR autosar422::EcucContainerValue -»
+struct OsAlarmAutostart «((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmAutostart = {
+	«getNumericalParamValue(this,"/ARRoot/Os/OsAlarm/OsAlarmAutostart/OsAlarmAlarmTime")», 								//uint64 OsAlarmAlarmTime; 		/*!< Start time of the alarm int tick */
+	ALARM_«getTextualParamValue(this,"/ARRoot/Os/OsAlarm/OsAlarmAutostart/OsAlarmAutostartType")»,										//OsAlarmAutostartType OsAlarmAutostartType;	/*!< Alarm type : OsAlarmAutostartType */
+	«getNumericalParamValue(this,"/ARRoot/Os/OsAlarm/OsAlarmAutostart/OsAlarmCycleTime")», 								//uint64 OsAlarmCycleTime;		/*!< Cycle time of the alarm in tick */
+	&«getShortName(getReferenceParamValue(this,"/ARRoot/Os/OsAlarm/OsAlarmAutostart/OsAlarmAppModeRef"))»_OsAppMode		//struct OsAppMode * OsAlarmAppModeRef;		/*!< Appmode to autostart the alarm */
+};
+«ENDDEFINE»
+
+«DEFINE OsAlarmAction FOR autosar422::EcucContainerValue-»
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmActivateTask")-»
+struct OsAlarmActivateTask «((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmActivateTask = {
+	&«getShortName(getFirstReferenceValue(this))»_OsTask			// struct OsTask * OsAlarmActivateTaskRef; /*!< Task to activate */
+}; 
+«ENDIF-»
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmIncrementCounter")-»
+struct OsAlarmIncrementCounter «((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmIncrementCounter = {
+	&«getShortName(getFirstReferenceValue(this))»_OsCounter			// struct OsCounter * OsAlarmIncrementCounterRef; /*!< OsCounter reference*/
+};
+«ENDIF-»
+
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmCallback")-»
+extern void «getShortName(getFirstReferenceValue(this))»_OsAlarmFunction;
+struct OsAlarmCallback «((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmCallback = {
+	&«getShortName(getFirstReferenceValue(this))»_OsAlarmFunction	// EcucFunctionNameDef OsAlarmCallback;	/*!< Callback function */
+};
+«ENDIF-»
+
+struct OsAlarmAction  «((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmAction = {
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmActivateTask")-»
+	&«((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmActivateTask,«ELSE-»
+	NULL,«ENDIF»
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmCallback")-»
+	&«((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmCallback,«ELSE-»
+	NULL,«ENDIF»
+«IF (getFirstSubCointainersDefinitionRef(this) == "/ARRoot/Os/OsAlarm/OsAlarmAction/OsAlarmIncrementCounter")-»
+	&«((autosar422::EcucContainerValue)this.eContainer.eContainer).shortName.value»_OsAlarmIncrementCounter«ELSE-»
+	NULL«ENDIF»
+};
+«ENDDEFINE»
+
+«DEFINE OsAlarm FOR autosar422::EcucContainerValue-»
+/*********************** Alarm «this.shortName.value» ***********************/
+«EXPAND OsAlarmAutostart FOR this.subContainers.ecucContainerValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsAlarm/OsAlarmAutostart")»
+
+«EXPAND OsAlarmAction FOR this.subContainers.ecucContainerValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsAlarm/OsAlarmAction")»
+struct OsAlarm «this.shortName.value»_OsAlarm = {
+	//					//	struct OsApplication * OsAlarmAccesingApplication;
+	&«getShortName(this.referenceValues.ecucReferenceValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsAlarm/OsAlarmCounterRef" ).valueRef.value)»_OsCounter,		//	struct OsCounter * OsAlarmCounterRef;
+	&«this.shortName.value»_OsAlarmAction,		//	struct OsAlarmAction * OsAlarmAction;
+«IF (this.subContainers.ecucContainerValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsAlarm/OsAlarmAutostart").compareTo(null) == 0)-»
+	NULL,				//	struct OsAlarmAutostart * OsAlarmAutostart;
+«ELSE-»
+	&«this.shortName.value»_OsAlarmAutostart,
+«ENDIF-»
+	NULL				//	IMPL+ :  struct OsAlarmXenomai * OsAlarmXenomai;
+};
+«ENDDEFINE»
+
+«DEFINE OsAlarmRef FOR autosar422::EcucContainerValue-»
+&«this.shortName.value»_OsAlarm,
+«ENDDEFINE»
+
+«DEFINE OsCounter FOR autosar422::EcucContainerValue-»
+/*********************** Counter «this.shortName.value» ***********************/
+struct OsCounter «this.shortName.value»_OsCounter = {
+	«getNumericalParamValue(this,"/ARRoot/Os/OsCounter/OsCounterMaxAllowedValue")»,		//	EcucIntegerParamDef OsCounterMaxAllowedValue;
+	«getNumericalParamValue(this,"/ARRoot/Os/OsCounter/OsCounterMinCycle")»,		//	EcucIntegerParamDef OsCounterMinCycle;
+	«getNumericalParamValue(this,"/ARRoot/Os/OsCounter/OsCounterTicksPerBase")»,		//	EcucIntegerParamDef OsCounterTicksPerBase;
+	COUNTER_«getTextualParamValue(this,"/ARRoot/Os/OsCounter/OsCounterType")»,	//	OsCounterType OsCounterType;
+	«getNumericalParamValue(this,"/ARRoot/Os/OsCounter/OsSecondsPerTick")»,		//	EcucFloatParamDef OsSecondsPerTick;
+	//		//	struct OsApplication * OsCounterAccessingApplication;
+	//		//	struct OsDriver * OsDriver;
+	//		//	struct OsTimerConstant * OsTimerConstant;
+	NULL	//	IMPL+ : struct OsCounterXenomai * OsCounterXenomai;
+};
+«ENDDEFINE»
+
+«DEFINE OsCounterRef FOR autosar422::EcucContainerValue-»
+&«this.shortName.value»_OsCounter,
+«ENDDEFINE»
+
+«DEFINE OsAppMode FOR autosar422::EcucContainerValue-»
+#define «this.shortName.value»_bit  (1 << «this.shortName.value»_ID)
+
+struct OsAppMode «this.shortName.value»_OsAppMode = {
+	"«this.shortName.value»",		//	EcucStringParamDef OsAppModeName;
+	«this.shortName.value»_bit	//	EcucIntegerParamDef OsAppModeValue;	
+};
+«ENDDEFINE»
+
+«DEFINE OsAppModeRef FOR autosar422::EcucContainerValue-»
+	&«this.shortName.value»_OsAppMode,
+«ENDDEFINE-»
+
+
+
+«DEFINE OsResource FOR autosar422::EcucContainerValue-»
+/*********************** Resource «this.shortName.value» ***********************/
+struct OsResource «this.shortName.value»_OsResource = {
+		RESOURCE_«getTextualParamValue(this,"/ARRoot/Os/OsResource/OsResourceProperty")»,	//OsResourceProperty OsResourceProperty;	
+		//		//struct OsApplication * OsApplicationAccessingApplication;
+«IF (this.referenceValues.ecucReferenceValue.selectFirst(e|e.definitionRef.value == "/ARRoot/Os/OsResource/OsResourceLinkedResourceRef") != null)-»
+		&«getShortName(getReferenceParamValue(this,"/ARRoot/Os/OsResource/OsResourceLinkedResourceRef"))»_OsResource,	//struct OsResource * OsResourceLinkedResourceRef;	
+«ELSE-»
+		NULL,	//struct OsResource * OsResourceLinkedResourceRef;	
+«ENDIF-»
+		NULL		//struct OsResourceXenomai * OsResourceXenomai;		/*!< Xenomai implementation for a Resource */};
+};
+«ENDDEFINE»
+
+«DEFINE OsResourceRef FOR autosar422::EcucContainerValue-»
+	&«this.shortName.value»_OsResource,
+«ENDDEFINE-»
+
+«DEFINE EcucModuleConfigurationValues FOR autosar422::EcucModuleConfigurationValues »
+
+«EXPAND OsAppMode FOREACH  selectEcucContainerValueList(this,"/ARRoot/Os/OsAppMode")»
+struct OsAppMode * OsAppMode_table[APP_COUNT] = {
+«EXPAND OsAppModeRef FOREACH  selectEcucContainerValueList(this,"/ARRoot/Os/OsAppMode")-»
+};
+
+«EXPAND OsResource FOREACH  selectEcucContainerValueList(this,"/ARRoot/Os/OsResource")»
+struct OsResource * OsResource_table[RESOURCE_COUNT] = {
+«EXPAND OsResourceRef FOREACH  selectEcucContainerValueList(this,"/ARRoot/Os/OsResource")-»
+};
+
+«EXPAND OsTask FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsTask")» 
+struct OsTask * OsTask_table[TASK_COUNT] = {
+«EXPAND OsTaskRef FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsTask")-» 
+};
+
+«EXPAND OsCounter FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsCounter")» 
+struct OsCounter * OsCounter_table[COUNTER_COUNT] = {
+«EXPAND OsCounterRef FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsCounter")-» 
+};
+
+«EXPAND OsAlarm FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsAlarm")» 
+struct OsAlarm* OsAlarm_table[ALARM_COUNT] = {
+«EXPAND OsAlarmRef FOREACH selectEcucContainerValueList(this,"/ARRoot/Os/OsAlarm")-» 
+};
+
+//extern  struct OsIsr* OsIsr_table[ISR_COUNT_MANUEL];
+struct OsIsr* OsIsr_table[ISR_COUNT] = {
+};
+struct Os os = {
+	OsAlarm_table,	// 	struct OsAlarm ** OsAlarm;
+	OsAppMode_table,//	struct OsAppMode ** OsAppMode;
+	//	NULL,		//	struct OsApplication ** OsApplication;
+	OsCounter_table,//	struct OsCounter ** OsCounter;
+	//	NULL,		//	struct OsEvent ** OsEvent;
+	//	NULL,		//	struct OsIoc * OsIoc;
+	OsIsr_table,		//	struct OsIsr ** OsIsr;
+	OsResource_table,			//	struct OsResource ** OsResource;
+	//	NULL,		//	struct OsScheduleTable ** OsScheduleTable;
+	//	NULL,		//	struct OsSpinlock * OsSpinlock;
+	OsTask_table	// 	struct OsTask * OsTask;
+};
+
+«ENDDEFINE»
+
+«DEFINE ARPackage FOR autosar422::ArPackage-»
+« EXPAND EcucModuleConfigurationValues FOREACH this.elements.ecucModuleConfigurationValues-»
+«ENDDEFINE»
+
+«DEFINE ARPackages FOR autosar422::ArPackagesType1-»
+« EXPAND ARPackage FOREACH this.arPackage-»
+«ENDDEFINE»
+
+«DEFINE Body FOR autosar422::Autosar-»
+	«EXPAND ARPackages FOR this.arPackages-»
+«ENDDEFINE»
+
+«DEFINE Header FOR autosar422::Autosar»
+/*****************************************************************
+ * 						Generated by Xpand Eclipse
+ *						File :	app_config.c
+ *						Date : 
+ *						Author : Matthieu Kowalewski
+ *						License : GPLv2
+ ****************************************************************/
+#include "os_task.h"
+#include "os_appmode.h"
+#include "os_os.h"
+#include "app/app_isr.h"
+«ENDDEFINE»
+
+
+
+
+«DEFINE Root FOR autosar422::Autosar»
+«EXPAND PreGeneration»
+«FILE "app_config.c"»
+«EXPAND Header»
+«EXPAND Body»
+«ENDFILE»
+«ENDDEFINE»

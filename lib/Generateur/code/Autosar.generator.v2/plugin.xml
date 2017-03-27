@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated AUTOSAR_4-2-2 -->
+      <package
+            uri="http://autosar.org/schema/r4.0"
+            class="org.autosar.schema.AUTOSAR.AUTOSARPackage"
+            genModel="src/metamodel/AUTOSAR_4-2-2.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated AUTOSAR_4-2-2 -->
+      <parser
+            type="arxml"
+            class="org.autosar.schema.AUTOSAR.util.AUTOSARResourceFactoryImpl"/>
+   </extension>
+</plugin>

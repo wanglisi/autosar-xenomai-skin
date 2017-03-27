@@ -1,0 +1,3 @@
+Run :
+
+java -jar xeauge.jar -m /path/to/autosar/model.arxml [-d /output/directory/]

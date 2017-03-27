@@ -1,0 +1,74 @@
+Modele AUTOSAR :
+http://5ise.quanxinquanyi.de/2010/08/31/integrating-the-autosar-tool-chain-with-eclipse-based-model-transformations/
+http://5ise.quanxinquanyi.de/?s=autosar&submit=Search
+Artop qui existe deja sur Eclipse ? Il faut être membre de la communauté Autosar...
+Diapo cool pour rapport
+https://www.slideshare.net/NESMA-NL/iwsm2014-quantifying-longterm-evolution-of-industrial-metamodels-a-case-study-darko-durisic-miroslaw-staron-tichy-hansson
+Description d'une solution model Autosar pour Matlab :
+https://lost-contact.mit.edu/afs/cs.stanford.edu/pkg/matlab-r2015b/matlab/r2015b/help/ecoder/examples/autosar-code-generation-for-multiple-runnable-entities.html
+Soft windows pour faire du ARXML:
+http://file.org/extension/arxml
+Coqos (OS pour Autosar ->voir ce que sait...)
+Git Parser Autosar xsd :
+https://github.com/axel-freesp/xsd2go
+Doc Autosar :
+http://www.autosar.org/standards/classic-platform/release-40/methodology-and-templates/templates/
+
+Explication XSD :
+XSD files are used to validate XML - that is conforms to a certain format.
+In that respect they are similar to DTDs that existed before them.
+
+The main difference between XSD and DTD is that XSD is written in XML and is considered easier to read and understand.
+
+XSDs constrain the vocabulary and structure of XML documents.
+    Without an XSD, an XML document need only follow the rules for being well-formed as given in the W3C XML Recommendation.
+    With an XSD, an XML document must adhere to additional constraints placed upon the names and values of its elements and attributes in order to be considered valid against the XSD per the W3C XML Schema 		Recommendation.
+XML is all about agreement, and XSDs provide the means for structuring and communicating the agreement beyond the basic definition of XML itsel
+Le fichier xsd contient la doc des specs Autosar en commentaire.
+
+Importer un fichier dans Eclipse :
+File->Import->General->File System should do it. There you can select the file(s) from some file system folder to your project (into folder).
+Lancer le projet en tant qu'application Eclipse :
+http://stackoverflow.com/questions/24797440/run-as-eclipse-application
+Installer Eclipse Plug-in environement
+
+Comment fait on t'on pour passer du modele .arxml au modele en mode texte ? 
+Clic droit sur le modele .arxml -> Open With -> Text Editor
+
+Explication Arborescence des fichiers :
+-Editeur de modele : Application Eclipse qui permet de creer des modeles Autosar. Pour le lancer ./AUTOSARModelCreator.
+-On peut ouvrir un modele arxml pour avoir une vue Eclipse avec AUTOSAR Editor -> Load Ressources -> Browse File sytem -> Choisir un modele arxml
+Essayer de generer les fichiers à partir de la config.
+Eclipse genere les fichiers os.h et Os_Cfg.h à l'aide du modele. 
+Sont il genere directement à la compilation avec make -> peut probable. Pour le tester generer les fichier C avec AUTOSARModelCreator et le comparer avec ceux generer à la compilation
+Dans les dossier test le fichier c'est bien ecrit à la main.
+
+On refait l'arborescence de task 2 dans un nouveau arxml dans l'application
+LOVERVIEW mettre le parametre FOR-ALL
+Dans le child LOVERVIEW mettre le parametre comment (surement optionnel)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Generateur Code -> Example
+Metamodel : contient les .xsd qui verifient la conformité des fichiers Autosar
+Model : Contient le fichier .arxmlhttp://5ise.quanxinquanyi.de/?s=autosar&submit=Search
+lib : os_app_define.xpt definit comment on va generer le code a partir du .arxmlhttp://5ise.quanxinquanyi.de/?s=autosar&submit=Search
+workflow : fichier eclipse genere
+
